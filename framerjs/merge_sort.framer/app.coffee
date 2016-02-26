@@ -24,23 +24,27 @@ merge = (A, nA, B, nB, C, n) ->
 			if (j < nB) 
 				C[k] = B[j]
 				j++
+	print "C" + C + " " + n
 
 mergeSort = (C, n) ->
 	# if array size is less than 2 it's sorted already
 	if (n < 2)
-		return;
+		return
 	
 	# split array in two, if uneven count of elements, second array will be larger
-	mid = n / 2;
-	nA = mid;
-	nB = n - nA;
+	mid = n / 2
+	nA = mid
+	nB = n - nA
+	print "mid=" + mid + " nA=" + nA + " nB=" + nB
 	A = C[0..nA - 1]
-	drawNumbers(A, totalSteps - Math.log2(n))
+# 	drawNumbers(A, totalSteps - Math.log2(n))
 	B = C[nA..n]
+	print "A" + A
+	print "B" + B
 	
 	# recursively calling to split, sort and merge
 	mergeSort(A, nA)
-	mergeSort(B, nB);
+	mergeSort(B, nB)
 	# split sorted arrays are merged into one sorted array
 	merge(A, nA, B, nB, C, n)
 
@@ -73,7 +77,7 @@ verticalMargin = numberLayerSize / 2
 bg = new BackgroundLayer
 	backgroundColor: "#EFEFEF"
 
-C = [5, 4, 1, 8, 7, 2, 6, 3]
+C = [5, 4, 1, 8, 7, 2, 6, 3, 3]
 n = C.length
 print C
 totalSteps = Math.log2(n)

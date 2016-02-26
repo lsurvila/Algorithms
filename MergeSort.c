@@ -88,7 +88,7 @@ void mergeSort(int *C, int n) {
 
 
 void runMergeSort() {
-    int C[8] = {5, 4, 1, 8, 7, 2, 6, 3};
+    int C[9] = {5, 4, 1, 8, 7, 2, 6, 3};
     int n = sizeof(C) / sizeof(C[0]);
 
     printIntArray(C, n, "C");
