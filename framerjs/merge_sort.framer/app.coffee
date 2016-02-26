@@ -24,7 +24,6 @@ merge = (A, nA, B, nB, C, n) ->
 			if (j < nB) 
 				C[k] = B[j]
 				j++
-	print "C" + C + " " + n
 
 mergeSort = (C, n) ->
 	# if array size is less than 2 it's sorted already
@@ -32,16 +31,14 @@ mergeSort = (C, n) ->
 		return
 	
 	# split array in two, if uneven count of elements, second array will be larger
-	mid = n / 2
+	mid = parseInt(n / 2)
 	nA = mid
 	nB = n - nA
-	print "mid=" + mid + " nA=" + nA + " nB=" + nB
+#	print "mid=" + mid + " nA=" + nA + " nB=" + nB + " n=" + n
 	A = C[0..nA - 1]
-# 	drawNumbers(A, totalSteps - Math.log2(n))
+	drawNumbers(A, totalSteps - Math.log2(mid), true)
 	B = C[nA..n]
-	print "A" + A
-	print "B" + B
-	
+	drawNumbers(B, totalSteps - Math.log2(mid), false)
 	# recursively calling to split, sort and merge
 	mergeSort(A, nA)
 	mergeSort(B, nB)
@@ -49,20 +46,25 @@ mergeSort = (C, n) ->
 	merge(A, nA, B, nB, C, n)
 
 
-drawNumbers = (numbers, row) ->
+drawNumbers = (numbers, row, left) ->
+	print "drawNumbers=" + numbers + " row=" + row  + " A " + left
+	xPosition = (Screen.width - numbers.length * numberLayerSize) / 2;
+	if left
+		xPosition += 0
+	else
+		xPosition += numbers.length * numberLayerSize
 	numbersLayer = new Layer
 		backgroundColor: "transparent"
-		x: (Screen.width - n * numberLayerSize) / 2
+		x: xPosition
 		y: row * numberLayerSize + verticalMargin
-	for k in [0..n-1]
-		drawNumber(C[k], k, numbersLayer)
+	for k in [0..numbers.length - 1]
+		drawNumber(numbers[k], k, numbersLayer)
 
 drawNumber = (number, i, parentLayer) ->
 	numberLayer = new TextLayer
 		width: numberLayerSize
 		height: numberLayerSize
 		x: i * numberLayerSize
-		setup: true
 		backgroundColor: "#3F51B5"
 		color: "#F0F1F8"
 		text: number
@@ -77,7 +79,7 @@ verticalMargin = numberLayerSize / 2
 bg = new BackgroundLayer
 	backgroundColor: "#EFEFEF"
 
-C = [5, 4, 1, 8, 7, 2, 6, 3, 3]
+C = [5, 4, 1, 8, 7, 2, 6, 3]
 n = C.length
 print C
 totalSteps = Math.log2(n)
