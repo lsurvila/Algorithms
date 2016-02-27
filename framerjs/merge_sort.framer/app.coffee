@@ -25,7 +25,7 @@ merge = (A, nA, B, nB, C, n) ->
 				C[k] = B[j]
 				j++
 
-mergeSort = (C, n) ->
+mergeSort = (C, n, parentLayer, parentLayerX) ->
 	# if array size is less than 2 it's sorted already
 	if (n < 2)
 		return
@@ -36,32 +36,30 @@ mergeSort = (C, n) ->
 	nB = n - nA
 #	print "mid=" + mid + " nA=" + nA + " nB=" + nB + " n=" + n
 	A = C[0..nA - 1]
-	drawNumbers(A, totalSteps - Math.log2(mid), true)
+	aLayer = drawNumbers(A, totalSteps - Math.log2(mid), parentLayerX)
+	aLayer.superLayer = parentLayer
 	B = C[nA..n]
-	drawNumbers(B, totalSteps - Math.log2(mid), false)
+	bLayer = drawNumbers(B, totalSteps - Math.log2(mid), parentLayerX)
+	bLayer.superLayer = parentLayer
 	# recursively calling to split, sort and merge
 	mergeSort(A, nA)
 	mergeSort(B, nB)
 	# split sorted arrays are merged into one sorted array
 	merge(A, nA, B, nB, C, n)
 
-
-drawNumbers = (numbers, row, left) ->
-	print "drawNumbers=" + numbers + " row=" + row  + " A " + left
-	xPosition = (Screen.width - numbers.length * numberLayerSize) / 2;
-	if left
-		xPosition += 0
-	else
-		xPosition += numbers.length * numberLayerSize
+drawNumbers = (numbers, row, xPosition) ->
+	print "drawNumbers=" + numbers + " row=" + row
 	numbersLayer = new Layer
 		backgroundColor: "transparent"
 		x: xPosition
-		y: row * numberLayerSize + verticalMargin
+		y: row * numberLayerSize
 	for k in [0..numbers.length - 1]
-		drawNumber(numbers[k], k, numbersLayer)
+		numberLayer = drawNumber(numbers[k], k, numbersLayer)
+		numbersLayer.addSubLayer(numberLayer)
+	return numbersLayer
 
-drawNumber = (number, i, parentLayer) ->
-	numberLayer = new TextLayer
+drawNumber = (number, i) ->
+	number = new TextLayer
 		width: numberLayerSize
 		height: numberLayerSize
 		x: i * numberLayerSize
@@ -71,7 +69,7 @@ drawNumber = (number, i, parentLayer) ->
 		fontSize: numberLayerSize * 0.7
 		textAlign: "center"
 		autoSizeHeight: true
-	numberLayer.superLayer = parentLayer
+	return number
 
 
 numberLayerSize = 100
@@ -80,13 +78,15 @@ bg = new BackgroundLayer
 	backgroundColor: "#EFEFEF"
 
 C = [5, 4, 1, 8, 7, 2, 6, 3]
+positions = [0, 0, 0, 0, 0, 0, 0, 0]
 n = C.length
 print C
 totalSteps = Math.log2(n)
 
-drawNumbers(C, 0)
+position = (Screen.width - n * numberLayerSize) / 2
+parentLayer = drawNumbers(C, 0, position)
 	
-mergeSort(C, n)
+mergeSort(C, n, parentLayer)
 print C
 
 
